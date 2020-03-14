@@ -17,13 +17,19 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-AUTO_STOP_AFTER_SECONDS=$(aws sagemaker list-tags --resource-arn ${NOTEBOOK_INSTANCE_ARN} | jq '.Tags | map(select(.Key == "AUTO_STOP_AFTER_SECONDS")) | .[0].Value' | tr -d '"')
-if [[ "${AUTO_STOP_AFTER_SECONDS}" == "null" ]]; then
-    AUTO_STOP_AFTER_SECONDS=7200
+NOTEBOOK_INSTANCE_NAME=$(jq '.ResourceName' \
+                      /opt/ml/metadata/resource-metadata.json --raw-output)
+JQ_OP=".NotebookInstances | map(select(.NotebookInstanceName == \"${NOTEBOOK_INSTANCE_NAME}\")) | .[0].NotebookInstanceArn"
+NOTEBOOK_INSTANCE_ARN=$(aws sagemaker list-notebook-instances | jq "${JQ_OP}" | tr -d '"')
+
+IDLE_SECONDS=${IDLE_SECONDS:-3600}
+TAG_IDLE_SECONDS=$(aws sagemaker list-tags --resource-arn ${NOTEBOOK_INSTANCE_ARN} | jq '.Tags | map(select(.Key == "IDLE_SECONDS")) | .[0].Value' | tr -d '"')
+if [[ "${TAG_IDLE_SECONDS}" != "null" ]]; then
+    IDLE_SECONDS=${TAG_IDLE_SECONDS}
 fi
 
-echo "Setting cron autostop.py to stop after ${AUTO_STOP_AFTER_SECONDS} seconds of idleness"
-(crontab -l 2>/dev/null; echo "*/5 * * * * /bin/bash -c '/usr/bin/python3 $DIR/autostop.py --time ${AUTO_STOP_AFTER_SECONDS} | tee -a /home/ec2-user/SageMaker/auto-stop-idle.log'") | crontab -
+echo "Setting cron autostop.py to stop after ${IDLE_SECONDS} seconds of idleness"
+(crontab -l 2>/dev/null; echo "*/5 * * * * /bin/bash -c '/usr/bin/python3 $DIR/autostop.py --time ${IDLE_SECONDS} | tee -a /home/ec2-user/SageMaker/auto-stop-idle.log'") | crontab -
 
 echo "Making sure logs are sent to cloudwatch"
 has_config=$(grep "auto-stop-idle" /etc/awslogs/awslogs.conf || echo "no")
