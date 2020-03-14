@@ -3,14 +3,14 @@ set -e
 SHA=${1:-master}
 echo "Installing version ${SHA}"
 
-# create a friendly directory in persisted path
+# create a friendly directory
 mkdir -p /home/ec2-user/lifecycle-scripts/auto-stop-idle
 cd /home/ec2-user/lifecycle-scripts/auto-stop-idle
 
 wget -O autostop.py https://raw.githubusercontent.com/mariokostelac/sagemaker-setup/${SHA}/scripts/auto-stop-idle/autostop.py
 chmod +x autostop.py
 
-wget -O on-start https://raw.githubusercontent.com/mariokostelac/sagemaker-setup/${SHA}/scripts/auto-stop-idle/on-start.sh
+wget -O on-start.sh https://raw.githubusercontent.com/mariokostelac/sagemaker-setup/${SHA}/scripts/auto-stop-idle/on-start.sh
 chmod +x on-start.sh
 
 # install the watcher

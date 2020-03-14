@@ -20,6 +20,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 NOTEBOOK_INSTANCE_NAME=$(jq '.ResourceName' \
                       /opt/ml/metadata/resource-metadata.json --raw-output)
 
+echo $IDLE_TIME
 IDLE_TIME=${IDLE_TIME:-3600}
 
 echo "Setting cron autostop.py to stop after ${IDLE_TIME} seconds of idleness"
