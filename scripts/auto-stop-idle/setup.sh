@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-SHA=${1:-c9e62e1898e788a321caae437ac7686aa3da07d1}
+SHA=${1:-master}
 echo "Installing version ${SHA}"
 
 #mkdir -p /home/ec2-user/lifecycle-scripts/auto-stop-idle
