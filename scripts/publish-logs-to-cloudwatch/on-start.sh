@@ -11,7 +11,7 @@ NOTEBOOK_INSTANCE_NAME=$(jq '.ResourceName' \
 touch $FILENAME
 
 echo "Changing awslogs configuration to send ${FILENAME}"
-has_config=$(grep "auto-stop-idle" /etc/awslogs/awslogs.conf || echo "no")
+has_config=$(grep "${LOG_NAME}" /etc/awslogs/awslogs.conf || echo "no")
 if [[ "${has_config}" == "no" ]]; then
     echo "adding awslogs config for ${LOG_NAME}"
     cat >> /etc/awslogs/awslogs.conf <<EOF
