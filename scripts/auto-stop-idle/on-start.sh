@@ -20,10 +20,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 NOTEBOOK_INSTANCE_NAME=$(jq '.ResourceName' \
                       /opt/ml/metadata/resource-metadata.json --raw-output)
 
-IDLE_SECONDS=${IDLE_SECONDS:-3600}
+IDLE_TIME=${IDLE_TIME:-3600}
 
-echo "Setting cron autostop.py to stop after ${IDLE_SECONDS} seconds of idleness"
-(crontab -l 2>/dev/null; echo "*/5 * * * * /bin/bash -c '/usr/bin/python3 $DIR/autostop.py --time ${IDLE_SECONDS} | tee -a /home/ec2-user/SageMaker/auto-stop-idle.log'") | crontab -
+echo "Setting cron autostop.py to stop after ${IDLE_TIME} seconds of idleness"
+(crontab -l 2>/dev/null; echo "*/5 * * * * /bin/bash -c '/usr/bin/python3 $DIR/autostop.py --time ${IDLE_TIME} | tee -a /home/ec2-user/SageMaker/auto-stop-idle.log'") | crontab -
 
 echo "Making sure logs are sent to cloudwatch"
 has_config=$(grep "auto-stop-idle" /etc/awslogs/awslogs.conf || echo "no")
