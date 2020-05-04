@@ -25,7 +25,7 @@ EOF
 cat > /home/ec2-user/SageMaker/SSH_INSTRUCTIONS <<EOD
 SSH enabled through ngrok!
 
-Use ssh ec2-user@${$INTERNAL_HOSTNAME} to SSH here!
+Use ssh ec2-user@${INTERNAL_HOSTNAME} to SSH here!
 EOD
 chmod +x /usr/bin/copy-ssh-keys
 chown ec2-user:ec2-user /usr/bin/copy-ssh-keys
