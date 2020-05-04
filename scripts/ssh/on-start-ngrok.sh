@@ -16,8 +16,10 @@ tunnels:
         proto: tcp
         addr: 22
 EOF
+    chown -R ec2-user:ec2-user /home/ec2-user/SageMaker/.ngrok
 fi
 
+# start-ngrok-ssh script
 echo "Creating /usr/bin/start-ngrok-ssh..."
 cat > /usr/bin/start-ngrok-ssh <<'EOF'
 #!/usr/bin/env bash
@@ -38,9 +40,28 @@ echo "SSH address ${TUNNEL_URL}"
 cat > /home/ec2-user/SageMaker/SSH_INSTRUCTIONS <<EOD
 SSH enabled through ngrok!
 
-address: ${TUNNEL_URL}
+Use ssh ec2-user@${TUNNEL_URL} to SSH here!
 EOD
 EOF
 
 chmod +x /usr/bin/start-ngrok-ssh
+chown ec2-user:ec2-user /usr/bin/start-ngrok-ssh
+
+# copy-ssh-keys script
+mkdir -p /home/ec2-user/.ssh && chown ec2-user:ec2-user /home/ec2-user/.ssh
+mkdir -p /home/ec2-user/SageMaker/ssh && chown -R ec2-user:ec2-user /home/ec2-user/SageMaker/ssh
+cat > /usr/bin/copy-ssh-keys <<'EOF'
+#!/usr/bin/env bash
+
+set -e
+
+touch /home/ec2-user/SageMaker/ssh/authorized_keys
+chown ec2-user:ec2-user /home/ec2-user/SageMaker/ssh/authorized_keys
+
+cnt=$(cat /home/ec2-user/SageMaker/ssh/authorized_keys | wc -l)
+echo "Copying ${cnt} SSH keys..."
+cp /home/ec2-user/SageMaker/ssh/authorized_keys /home/ec2-user/.ssh/authorized_keys
+EOF
+
+copy-ssh-keys
 start-ngrok-ssh
