@@ -33,6 +33,8 @@ sleep 10
 TUNNEL_URL=$(grep -Eo 'url=.+' /var/log/ngrok.log | cut -d= -f2)
 if [[ -z $TUNNEL_URL ]]; then
     echo "Failed to set up ssh with ngrok"
+    echo "Ngrok logs:"
+    cat /var/log/ngrok.log
 fi
 
 echo "SSH address ${TUNNEL_URL}"
