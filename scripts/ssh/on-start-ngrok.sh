@@ -39,8 +39,9 @@ echo "SSH address ${TUNNEL_URL}"
 
 cat > /home/ec2-user/SageMaker/SSH_INSTRUCTIONS <<EOD
 SSH enabled through ngrok!
+Address: ${TUNNEL_URL}
 
-Use ssh ec2-user@${TUNNEL_URL} to SSH here!
+Use 'ssh -p <port_from_above> ec2-user@<host_from_above>' to SSH here!
 EOD
 EOF
 chmod +x /usr/bin/start-ngrok-ssh
