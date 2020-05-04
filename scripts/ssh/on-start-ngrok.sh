@@ -4,7 +4,7 @@ echo "Setting up ssh with ngrok..."
 
 echo "Downloading ngrok..."
 curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
-unzip ngrok.zip
+unzip -o ngrok.zip
 
 echo "Creating config file /home/ec2-user/SageMaker/.ngrok/config.yml..."
 mkdir -p /home/ec2-user/SageMaker/.ngrok
@@ -43,7 +43,6 @@ SSH enabled through ngrok!
 Use ssh ec2-user@${TUNNEL_URL} to SSH here!
 EOD
 EOF
-
 chmod +x /usr/bin/start-ngrok-ssh
 chown ec2-user:ec2-user /usr/bin/start-ngrok-ssh
 
@@ -62,6 +61,8 @@ cnt=$(cat /home/ec2-user/SageMaker/ssh/authorized_keys | wc -l)
 echo "Copying ${cnt} SSH keys..."
 cp /home/ec2-user/SageMaker/ssh/authorized_keys /home/ec2-user/.ssh/authorized_keys
 EOF
+chmod +x /usr/bin/copy-ssh-keys
+chown ec2-user:ec2-user /usr/bin/copy-ssh-keys
 
 copy-ssh-keys
 start-ngrok-ssh
