@@ -2,7 +2,7 @@
 
 set -e
 
-sudo --preserve-env=PIP_PACKAGE_NAME,EXTENSION_NAME -u ec2-user -i <<'EOF'
+sudo -E -u ec2-user -i <<'EOF'
 if [[ -z "${PIP_PACKAGE_NAME}" ]]; then
   echo "PIP_PACKAGE_NAME is empty"
   exit
