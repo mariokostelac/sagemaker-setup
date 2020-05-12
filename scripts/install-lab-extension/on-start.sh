@@ -2,7 +2,7 @@
 
 set -e
 
-sudo --preserve-env=EXTENSION_NAME -u ec2-user -i <<'EOF'
+sudo EXTENSION_NAME="${EXTENSION_NAME}" -u ec2-user -i <<'EOF'
 
 if [[ -z "${EXTENSION_NAME}" ]]; then
   echo "EXTENSION_NAME is empty"
